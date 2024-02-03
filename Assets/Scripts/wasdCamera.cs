@@ -5,13 +5,13 @@ using UnityEngine;
 public class wasdCamera : MonoBehaviour
 {
     private Vector3 CameraPosition;
-    [Header("Camera Speed")]
+    
 
-    public float Speed;
+    private float Speed = .5f;
     // Start is called before the first frame update
     void Start()
     {
-        CameraPosition = this.transform.position;
+        CameraPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -30,6 +30,6 @@ public class wasdCamera : MonoBehaviour
             CameraPosition.x += Speed / 50;
         }
 
-        this.transform.position = CameraPosition;
+        transform.position = CameraPosition;
     }
 }
