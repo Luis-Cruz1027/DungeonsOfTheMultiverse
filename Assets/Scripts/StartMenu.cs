@@ -7,11 +7,14 @@ public class StartMenu : MonoBehaviour
 {
     public void playGame()
     {
-        SceneManager.LoadScene("mainGameScene");
+        SceneManager.LoadScene("DungeonScene");
     }
 
     public void quitGame()
     {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
         Application.Quit();
     }
 }
