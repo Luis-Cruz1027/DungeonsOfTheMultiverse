@@ -4,11 +4,25 @@ using UnityEngine;
 
 public class doorScript : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    private string newRoomText;
+    private OpenAIController controller;
+
+    private void Start()
     {
-        if (collision.gameObject.layer == 3)
+        controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OpenAIController>();
+        newRoomText = "The party enters a new room.";
+    }
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) 
         {
-            Debug.Log("Door Triggered");
+            //call door method;
         }
+    }
+
+    private void doorTrigger()
+    {
+        Debug.Log("door triggered.");
+        controller.GetResponse(newRoomText);
     }
 }
