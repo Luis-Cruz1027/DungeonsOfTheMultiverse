@@ -30,6 +30,9 @@ public class isDraggable : MonoBehaviour
         int mytile = manager.GetTileUnderType(GetMouseWorldPosition());
 
         switch(mytile){
+            case 0:
+                transform.position = GetMouseWorldPosition() + mousePositionOffset;
+                break;
             case 1:
                 transform.position = GetMouseWorldPosition() + mousePositionOffset;
                 break;

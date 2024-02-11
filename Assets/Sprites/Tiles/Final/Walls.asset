@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f816e0bbe5ced4894f01afb99dbb6d, type: 3}
+  m_Name: Walls
+  m_EditorClassIdentifier: 
+  tiles:
+  - {fileID: 11400000, guid: 992348c866607aa4d966239599b8adfd, type: 2}
+  - {fileID: 11400000, guid: 8d5705bf49552934ca40deb20e0e9c34, type: 2}
+  - {fileID: 11400000, guid: fb450e0d1fd33fd46a94539ab766fa5c, type: 2}
+  - {fileID: 11400000, guid: f03abc0bb981fdf46be194dfc118fb34, type: 2}
+  - {fileID: 11400000, guid: aa8f1e03c838dfc4c93bdb36012fd8de, type: 2}
+  - {fileID: 11400000, guid: f31aea007195afd4292a5859332fbc94, type: 2}
+  - {fileID: 11400000, guid: 39e1154b9457934459f5480f2c1826af, type: 2}
+  - {fileID: 11400000, guid: f2737bdd688bb6041a831ff74dea2520, type: 2}
+  - {fileID: 11400000, guid: 89cb572d5b064834fa5f7af504af46b6, type: 2}
+  - {fileID: 11400000, guid: 399e396b57539e94ca0778f2507bad99, type: 2}
+  - {fileID: 11400000, guid: e663afb297233e948b8d7d8b51389b49, type: 2}
+  type: 2
+  seenByPlayer: 0
+  isDoor: 0
