@@ -20,7 +20,6 @@ public class OpenAIController : MonoBehaviour
     public TMP_Text textField;
     //public TMP_InputField inputField;
     public Button okButton;
-    public doorScript triggerDoor;
 
     // Start is called before the first frame update
     void Start()

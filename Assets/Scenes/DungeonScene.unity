@@ -153,7 +153,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fccd439f1740b394baba5c30c2ccac86, type: 2}
   - {fileID: 11400000, guid: 0aa1525665e0e874da28ab2753d0a4b5, type: 2}
   - {fileID: 11400000, guid: 998a53dd55ffda44084654b12c7fde2b, type: 2}
+  - {fileID: 11400000, guid: a898feace9ab45544ba0b2baa586b3f2, type: 2}
   - {fileID: 11400000, guid: b11c42b717aae094491d63dc123b27b8, type: 2}
+  open: {fileID: 11400000, guid: 6186627612543e24bb040006a605539d, type: 2}
+  close: {fileID: 11400000, guid: f9cf53956e6297242973602ff70459db, type: 2}
 --- !u!4 &106611036
 Transform:
   m_ObjectHideFlags: 0
@@ -480,7 +483,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textField: {fileID: 2101025423}
   okButton: {fileID: 1841971250}
-  triggerDoor: {fileID: 0}
 --- !u!1 &584394439
 GameObject:
   m_ObjectHideFlags: 0

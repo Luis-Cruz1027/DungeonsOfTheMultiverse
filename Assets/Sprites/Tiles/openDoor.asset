@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35f816e0bbe5ced4894f01afb99dbb6d, type: 3}
-  m_Name: Doors
+  m_Name: openDoor
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: f9cf53956e6297242973602ff70459db, type: 2}
-  type: 2
+  - {fileID: 11400000, guid: 6186627612543e24bb040006a605539d, type: 2}
+  type: 1
   seenByPlayer: 0
   isDoor: 1
