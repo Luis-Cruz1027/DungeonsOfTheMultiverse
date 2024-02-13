@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Null
   m_EditorClassIdentifier: 
   tiles:
-  - {fileID: 11400000, guid: 50c68ab643cbe8845a7f5fdcd18d8f11, type: 2}
+  - {fileID: 11400000, guid: 9e1a8292757b21e40b3855471ce8fa55, type: 2}
   type: 0
   seenByPlayer: 0
   isDoor: 0

@@ -36,7 +36,6 @@ public class isDraggable : MonoBehaviour
                 transform.position = GetMouseWorldPosition() + mousePositionOffset;
                 break;
             case 2:
-                transform.position = mousePositionOffset;
                 break;
             default:
                 Debug.Log("Tile type isn't 0, 1, or 2...");
