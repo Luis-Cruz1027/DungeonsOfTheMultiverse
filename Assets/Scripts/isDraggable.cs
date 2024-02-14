@@ -10,11 +10,12 @@ public class isDraggable : MonoBehaviour
     Vector3 startingPos;
 
     private Vector2 extents;
-    [SerializeField]private TileManager manager;
+    private TileManager manager;
     
 
     private void Awake(){
         extents = GetComponent<SpriteRenderer>().bounds.extents;
+        manager = FindFirstObjectByType<TileManager>();
     }
     void Start(){
         

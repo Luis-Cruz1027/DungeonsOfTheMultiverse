@@ -58,7 +58,7 @@ public class TileManager : MonoBehaviour
             if (dataFromTiles[onTile].isDoor == true && !doorNames.Contains(POS))
             {
                 Debug.Log("door triggered.");
-                //controller.GetResponse(newRoomText);
+                controller.GetResponse(newRoomText);
                 doorNames.Add(POS);
                 dungeon.SetTile(POS, open);
             }
