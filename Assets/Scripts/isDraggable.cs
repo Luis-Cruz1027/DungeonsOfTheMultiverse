@@ -10,12 +10,16 @@ public class isDraggable : MonoBehaviour
     Vector3 startingPos;
 
     private Vector2 extents;
-    private TileManager manager;
+    [SerializeField]private TileManager manager;
     
 
     private void Awake(){
-        manager = FindFirstObjectByType<TileManager>();
         extents = GetComponent<SpriteRenderer>().bounds.extents;
+    }
+    void Start(){
+        
+        manager.UpdateFog(transform.position);
+        
     }
 
     private Vector3 GetMouseWorldPosition(){
@@ -41,7 +45,7 @@ public class isDraggable : MonoBehaviour
                 Debug.Log("Tile type isn't 0, 1, or 2...");
                 break;
         }
-            
+        manager.UpdateFog(transform.position);    
 
         
     }
