@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ScrollView
   - Door
+  - EnemySpawner
   layers:
   - Default
   - TransparentFX
