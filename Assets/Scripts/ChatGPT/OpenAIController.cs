@@ -16,10 +16,12 @@ public class OpenAIController : MonoBehaviour
     private OpenAIAPI api;
     private List<ChatMessage> messages;
     private string someText;
+    private string temp;
+
+    //spawner variables and GameObjects
+    private enemySpawner enemySpawner;
     private string enemyType;
     private int numEnemies;
-    private int index;
-    private string temp;
 
     public TMP_Text textField;
     //public TMP_InputField inputField;
@@ -29,9 +31,13 @@ public class OpenAIController : MonoBehaviour
     void Start()
     {
         someText = "The party enters a new room.";
+
         api = new OpenAIAPI("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");
         StartConversation();
         okButton.onClick.AddListener(() => GetResponse(someText));
+
+        //initialize spawners
+        enemySpawner = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
     }
 
     private void StartConversation()
@@ -47,8 +53,11 @@ public class OpenAIController : MonoBehaviour
 
     public async void GetResponse(string response)
     {
-        //disable button for no spam
+        //disable button for no spam and reset variables
         okButton.enabled = false;
+        enemyType = "";
+        numEnemies = 0;
+
 
         //fill message into inputfield
         ChatMessage userMessage = new ChatMessage();
@@ -78,8 +87,7 @@ public class OpenAIController : MonoBehaviour
         {
             if (responseMessage.Content[i] == ']')
             {
-                index = i;
-                //temp = responseMessage.Content.Substring(index, responseMessage.Content.Length - 1);
+                temp = responseMessage.Content.Substring(i + 1);
                 break;
             }
             if (responseMessage.Content[i] != ',')
@@ -88,21 +96,24 @@ public class OpenAIController : MonoBehaviour
             }
         }
 
-        numEnemies = (int)enemyType[enemyType.Length - 1] - 48;     //gives ASCI value
+        numEnemies = (int)enemyType[enemyType.Length - 1] - 48;     //gives ASCI value must subtract
 
         //Debug.Log(enemyType);
         Debug.Log(numEnemies);
         enemyType = enemyType.Substring(0, enemyType.Length - 2);
         Debug.Log(enemyType);
 
-        enemyType = "";
-        numEnemies = 0;
+        //make spawner variable true
+        if (enemyType == "Goblin")
+        {
+            enemySpawner.doorSpawnEnemy(numEnemies);
+        }
 
         //add response to list of messages
         messages.Add(responseMessage);
 
         //update text field with response
-        textField.text += string.Format("You: {0}\n\nDM: {1}\n\n", userMessage.Content, responseMessage.Content);
+        textField.text += string.Format("You: {0}\n\nDM: {1}\n\n", userMessage.Content, temp);
         
         //reactivate button
         okButton.enabled = true;

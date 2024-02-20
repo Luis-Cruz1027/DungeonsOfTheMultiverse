@@ -24,7 +24,7 @@ public class TileManager : MonoBehaviour
     //Chatgpt and spawners
     private string newRoomText;
     private OpenAIController controller;
-    private enemySpawner enemySpawner;
+    //private enemySpawner enemySpawner;
 
 
     private void Awake(){
@@ -51,7 +51,7 @@ public class TileManager : MonoBehaviour
         }
 
         //initialize spawners
-        enemySpawner = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
+        //enemySpawner = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
     }
 
     private void Update()
@@ -66,10 +66,7 @@ public class TileManager : MonoBehaviour
                 Debug.Log("door triggered.");
                 controller.GetResponse(newRoomText);
                 doorNames.Add(POS);
-                if (enemySpawner.isSpawn)
-                {
-                    enemySpawner.doorSpawnEnemy();
-                }
+                //enemySpawner.doorSpawnEnemy();          //function will determine if enemies spawn
                 dungeon.SetTile(POS, open);
             }
             if (doorNames.Contains(POS))

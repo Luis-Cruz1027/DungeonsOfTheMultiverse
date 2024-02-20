@@ -5,17 +5,14 @@ using UnityEngine;
 public class enemySpawner : MonoBehaviour
 {
     public GameObject Goblin;
-    public bool isSpawn;
 
-    private void Start()
+    public void doorSpawnEnemy(int numEnemies)
     {
-        isSpawn = false;
-    }
+        for (int i = 0; i < numEnemies; i++)
+        {
+            Instantiate(Goblin, transform.position, Quaternion.identity);
 
-    public void doorSpawnEnemy()
-    {
-        Instantiate(Goblin, transform.position, Quaternion.identity);
-        Debug.Log("spawned enemy");
-        isSpawn = false;
+            Debug.Log("spawned enemy, " + i);
+        }
     }
 }
