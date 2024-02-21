@@ -25,6 +25,7 @@ public class TileManager : MonoBehaviour
     private string newRoomText;
     private OpenAIController controller;
     //private enemySpawner enemySpawner;
+    private List<Vector3Int> rooms;
 
 
     private void Awake(){
@@ -109,5 +110,9 @@ public class TileManager : MonoBehaviour
                 
             }
         }
+    }
+
+    public void addRoomToList(Vector3Int centerOfRoom){
+        rooms.Add(centerOfRoom);
     }
 }
