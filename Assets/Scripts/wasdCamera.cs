@@ -10,7 +10,10 @@ public class wasdCamera : MonoBehaviour
     private float Speed = .5f;
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        GameObject player = GameObject.FindWithTag("Player");
+        Vector3 playerPos = new Vector3(player.transform.position.x, player.transform.position.y, -10);
+        transform.position = playerPos;
         CameraPosition = transform.position;
     }
 
