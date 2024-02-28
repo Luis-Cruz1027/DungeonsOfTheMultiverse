@@ -17,7 +17,7 @@ public class OpenAIController : MonoBehaviour
     private List<ChatMessage> messages;
     private string someText;
     private string temp;
-
+    private string testURL = "https://drive.google.com/drive/folders/1l5ecWVskqufnRowYNbE3HUAM4FgMM76P";
     //spawner variables and GameObjects
     private enemySpawner enemySpawner;
     private string enemyType;
