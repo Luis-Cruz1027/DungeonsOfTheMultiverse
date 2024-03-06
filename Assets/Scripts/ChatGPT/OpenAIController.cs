@@ -103,7 +103,7 @@ public class OpenAIController : MonoBehaviour
         enemyType = enemyType.Substring(0, enemyType.Length - 2);
         Debug.Log(enemyType);
 
-        //make spawner variable true
+        //spawn enemies only if detect enemy
         if (enemyType == "Goblin")
         {
             enemySpawner.doorSpawnEnemy(numEnemies);
