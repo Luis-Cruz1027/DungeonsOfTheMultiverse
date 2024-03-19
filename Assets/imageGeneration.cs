@@ -18,15 +18,15 @@ public class imageGeneration : MonoBehaviour
     {
         api = new OpenAIAPI("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");
 
-        //makeURLImages("A red dragon from mediaval times spewing fire");
+        //makeURLImages("A red dragon from mediaval times spewing fire from its mouth", () => { });
     }
 
-    public async void makeURLImages(string prompt) {
+    public async void makeURLImages(string prompt, Action callback) {
 
         var result = await api.ImageGenerations.CreateImageAsync(prompt);
         url = result.ToString();
         Debug.Log(url);
 
-        //callback.Invoke();
+        callback.Invoke();
     }
 }
