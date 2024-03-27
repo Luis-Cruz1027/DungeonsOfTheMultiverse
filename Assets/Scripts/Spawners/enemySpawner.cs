@@ -67,7 +67,7 @@ public class enemySpawner : MonoBehaviour
 
     public void doorSpawnEnemy(int numEnemies)
     {
-        Debug.Log(controller.monsterDescription);
+        //Debug.Log(controller.monsterDescription);
         Vector3Int doorpos = manager.getDoorPos();
         Vector3Int roomCenterActual = new Vector3Int(0,0,0);
         foreach(var room in roomCenters.Values){
