@@ -25,7 +25,7 @@ public class imageGeneration : MonoBehaviour
 
         var result = await api.ImageGenerations.CreateImageAsync(prompt);
         url = result.ToString();
-        Debug.Log(url);
+        //Debug.Log(url);
 
         callback.Invoke();
     }
