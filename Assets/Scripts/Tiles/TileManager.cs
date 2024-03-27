@@ -25,6 +25,9 @@ public class TileManager : MonoBehaviour
     private string newRoomText;
     private OpenAIController controller;
 
+    private TileManager manager;
+    Vector3Int POS;
+
 
     private void Awake(){
         radius = 10f;
@@ -55,13 +58,12 @@ public class TileManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             mousePOS = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int POS = dungeon.WorldToCell(mousePOS);
+            POS = dungeon.WorldToCell(mousePOS);
             TileBase onTile = dungeon.GetTile(POS);
             if (dataFromTiles[onTile].isDoor == true && !doorNames.Contains(POS))
             {
                 Debug.Log("door triggered.");
                 controller.GetResponse(newRoomText);
-                doorNames.Add(POS);
                 dungeon.SetTile(POS, open);
             }
             if (doorNames.Contains(POS))
@@ -104,5 +106,17 @@ public class TileManager : MonoBehaviour
                 
             }
         }
+    }
+
+    public Vector3Int getDoorPos(){
+        return POS;
+    }
+
+    public void disableDoors(Vector3Int center){
+        doorNames.Add(new Vector3Int(center.x - 4, center.y, 0));
+        doorNames.Add(new Vector3Int(center.x + 4, center.y, 0));
+        doorNames.Add(new Vector3Int(center.x, center.y - 4, 0));
+        doorNames.Add(new Vector3Int(center.x, center.y + 4, 0));
+        Debug.Log("Doors Disabled!");
     }
 }

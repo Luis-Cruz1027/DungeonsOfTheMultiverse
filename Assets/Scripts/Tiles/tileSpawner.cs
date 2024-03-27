@@ -386,5 +386,13 @@ public class tileSpawner : MonoBehaviour
         player.transform.position = roomCenters[generatedRooms[0]];
     }
 
+    public Dictionary<BoundsInt, Vector3Int> GetDictionary(){
+        return roomCenters;
+    }
+
+    public List<BoundsInt> GetList(){
+        return generatedRooms;
+    }
+
 
 }
