@@ -9,7 +9,6 @@ TagManager:
   - EnemySpawner
   - ImageMaker
   - TileManager
-  - fog
   - Dungeon
   layers:
   - Default
