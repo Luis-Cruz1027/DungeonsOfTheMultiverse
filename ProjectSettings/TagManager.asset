@@ -9,6 +9,7 @@ TagManager:
   - EnemySpawner
   - ImageMaker
   - TileManager
+  - charachter menu
   layers:
   - Default
   - TransparentFX
