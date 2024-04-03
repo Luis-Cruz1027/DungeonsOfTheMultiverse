@@ -30,7 +30,7 @@ public class GameObjectRightClick : MonoBehaviour
 
     public void KillButton()
     {
-        //decrement counter
+        //decrement counter.
         controller.numEnemies -= 1;
 
         //If counter reaches 0 send ChatGPT request.
