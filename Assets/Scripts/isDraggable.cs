@@ -11,16 +11,13 @@ public class isDraggable : MonoBehaviour
 
     private Vector2 extents;
     private TileManager manager;
+    private bool moved;
     
 
     private void Awake(){
         extents = GetComponent<SpriteRenderer>().bounds.extents;
         manager = FindFirstObjectByType<TileManager>();
-    }
-    void Start(){
-        
-        manager.UpdateFog(transform.position);
-        
+        moved = false;
     }
 
     private Vector3 GetMouseWorldPosition(){
@@ -39,6 +36,7 @@ public class isDraggable : MonoBehaviour
                 break;
             case 1:
                 transform.position = GetMouseWorldPosition() + mousePositionOffset;
+                moved = true;
                 break;
             case 2:
                 break;
@@ -46,9 +44,6 @@ public class isDraggable : MonoBehaviour
                 Debug.Log("Tile type isn't 0, 1, or 2...");
                 break;
         }
-        manager.UpdateFog(transform.position);    
-
-        
     }
 
     private void OnMouseUp(){
@@ -58,25 +53,12 @@ public class isDraggable : MonoBehaviour
             transform.position = startingPos;
         }
     }
-    // public void FixedUpdate(){
-        
-    //     if(Input.GetMouseButtonDown(0)){
-    //         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, float.PositiveInfinity, movableLayers);
-    //         if(hit){
-    //             dragging = hit.transform;
-    //             mousePositionOffset = dragging.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //             extents = dragging.GetComponent<SpriteRenderer>().sprite.bounds.extents;
-    //         }
-    //     }
-    //     else if(Input.GetMouseButtonUp(0)){
-    //         dragging = null;
-    //     }
-        
 
-    //     if(dragging != null){
-    //         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition) + mousePositionOffset;
-            
-    //         dragging.position = pos;
-    //     }
-    // }
+    public bool justMoved(){
+        return moved;
+    }
+
+    public void changeBack(){
+        moved = !moved;
+    }
 }

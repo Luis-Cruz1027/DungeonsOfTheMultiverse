@@ -16,10 +16,12 @@ public class tileSpawner : MonoBehaviour
 
     private Dictionary<BoundsInt, Vector3Int> roomCenters;
     private GameObject player;
+    private List<Vector3Int> allTiles;
 
     // Start is called before the first frame update
     void Awake()
     {
+        allTiles = new List<Vector3Int>();
         generatedRooms = new List<BoundsInt>();
         roomCenters = new Dictionary<BoundsInt, Vector3Int>();
         manager = FindFirstObjectByType<TileManager>();
@@ -44,12 +46,11 @@ public class tileSpawner : MonoBehaviour
                 grid_x = room.min.x;
                 foreach(string sval in line.Split()){
                     Vector3Int currLocation = new Vector3Int(grid_x, grid_y);
+                    allTiles.Add(currLocation);
                     switch(sval){
                         case "c":
                             dungeon.SetTile(currLocation, floorTiles[Random.Range(0, floorTiles.Length - 1)]);
                             roomCenters.Add(room, currLocation);
-                            break;
-                        case "0":
                             break;
                         case "1":
                             dungeon.SetTile(currLocation, floorTiles[Random.Range(0, floorTiles.Length - 1)]);
@@ -256,12 +257,14 @@ public class tileSpawner : MonoBehaviour
         if(offset){
             while(x < center.x){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 x++;
             }
         }
         else{
             while(x <= center.x - 5){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 x++;
             }
         }
@@ -271,46 +274,53 @@ public class tileSpawner : MonoBehaviour
         if(offset){
             while(x > center.x){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 x--;
             }
         }
         else{
             while(x >= center.x + 5){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 x--;
             }
         }
+        
     }
 
     private void generateUp(ref int x,ref int y,  Vector3Int center, bool offset = false){
         if(offset){
             while(y < center.y){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 y++;
             }
         }
         else{
             while(y <= center.y - 5){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 y++;
             }
         }
-        
     }
     
     private void generateDown(ref int x,ref int y,  Vector3Int center, bool offset = false){
         if(offset){
             while(y > center.y){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 y--;
             }
         }
         else{
             while(y >= center.y + 5){
                 dungeon.SetTile(new Vector3Int(x, y, 0), floorTiles[Random.Range(0, floorTiles.Length - 1)]);
+                allTiles.Add(new Vector3Int(x, y, 0));
                 y--;
             }
         }
+        
     }
 
     private void setDoor(int x, int y, int rotation = 0){
@@ -392,6 +402,10 @@ public class tileSpawner : MonoBehaviour
 
     public List<BoundsInt> GetList(){
         return generatedRooms;
+    }
+
+    public List<Vector3Int> AllTheTiles(){
+        return allTiles;
     }
 
 

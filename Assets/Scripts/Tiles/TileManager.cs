@@ -7,10 +7,6 @@ public class TileManager : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private Tilemap dungeon; // this is a tilemap containing all the tiles for the dungeon
-    [SerializeField] private Tilemap Fog; // this tilemap is acting as a mask over our dungeon
-
-    private List<Vector3> positionsInRadius;
-    private float radius;
     [SerializeField] private List<TileData> tileDatas;
     private List<Vector3> doorNames;
     public TileBase open;
@@ -24,22 +20,15 @@ public class TileManager : MonoBehaviour
     //Chatgpt
     private string newRoomText;
     private OpenAIController controller;
-
-    private TileManager manager;
     Vector3Int POS;
+    private List<Vector3Int> allTiles;
+    private tileSpawner tilespawner;
 
 
     private void Awake(){
-        radius = 10f;
-        positionsInRadius = new List<Vector3>();
-        for(float i = -radius; i <= radius; i++){
-            for(float j = -radius; j <= radius; j++){
-                positionsInRadius.Add(new Vector3(i, j, 0f));
-            }
-        }
-        
-
         doorNames = new List<Vector3>();
+        
+        allTiles = new List<Vector3Int>();
         newRoomText = "The party enters a new room.";
         controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OpenAIController>();
 
@@ -53,6 +42,16 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    private void Start(){
+        tilespawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
+        allTiles = tilespawner.AllTheTiles();
+
+        foreach(var tile in allTiles){
+            dungeon.SetTileFlags(tile, TileFlags.None);
+            dungeon.SetColor(tile, Color.black);
+        }
+
+    }
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -60,12 +59,6 @@ public class TileManager : MonoBehaviour
             mousePOS = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             POS = dungeon.WorldToCell(mousePOS);
             TileBase onTile = dungeon.GetTile(POS);
-            if (dataFromTiles[onTile].isDoor == true && !doorNames.Contains(POS))
-            {
-                Debug.Log("door triggered.");
-                controller.GetResponse(newRoomText);
-                dungeon.SetTile(POS, open);
-            }
             if (doorNames.Contains(POS))
             {
                 if (onTile == open)
@@ -76,6 +69,12 @@ public class TileManager : MonoBehaviour
                 {
                     dungeon.SetTile(POS, open);
                 }
+            }
+            else if (dataFromTiles[onTile].isDoor == true && !doorNames.Contains(POS))
+            {
+                Debug.Log("door triggered.");
+                controller.GetResponse(newRoomText);
+                dungeon.SetTile(POS, open);
             }
         }
     }
@@ -92,20 +91,6 @@ public class TileManager : MonoBehaviour
         }
         
         return tileType;
-    }
-
-    public void UpdateFog(Vector3 position){
-        Vector3Int currentPlayerPosition = Fog.WorldToCell(position);
-        TileBase onTile;
-        foreach(var element in positionsInRadius){
-            onTile = dungeon.GetTile(dungeon.WorldToCell(position + element));
-            if(onTile != null){
-                if(dataFromTiles[onTile].type != 0){
-                    Fog.SetTile(currentPlayerPosition + Fog.WorldToCell(element), null);
-                }
-                
-            }
-        }
     }
 
     public Vector3Int getDoorPos(){
