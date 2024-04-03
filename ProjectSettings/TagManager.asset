@@ -9,7 +9,7 @@ TagManager:
   - EnemySpawner
   - ImageMaker
   - TileManager
-  - charachter menu
+  - Dungeon
   layers:
   - Default
   - TransparentFX

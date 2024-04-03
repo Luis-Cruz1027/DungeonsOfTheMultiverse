@@ -33,7 +33,6 @@ public class enemySpawner : MonoBehaviour
         manager = GameObject.FindGameObjectWithTag("TileManager").GetComponent<TileManager>();
         roomCenters = myspawner.GetDictionary();
         generatedRooms = myspawner.GetList();
-        myspawner.enabled = false;
         imagegeneration = GameObject.FindGameObjectWithTag("ImageMaker").GetComponent<imageGeneration>();
         controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OpenAIController>();
     }
