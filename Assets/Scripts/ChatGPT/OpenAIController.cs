@@ -56,9 +56,12 @@ public class OpenAIController : MonoBehaviour
     {
         //disable button for no spam and reset variables
         okButton.enabled = false;
+
+        //reset variables on each call
         enemyType = "";
         numEnemies = 0;
         monsterDescription = "";
+        temp = "";
 
         //fill message into inputfield
         ChatMessage userMessage = new ChatMessage();
@@ -84,54 +87,66 @@ public class OpenAIController : MonoBehaviour
         responseMessage.Content = chatResult.Choices[0].Message.Content;
         Debug.Log(string.Format("{0}: {1}", responseMessage.rawRole, responseMessage.Content));
 
-        int i;  //start parsing string
-        for (i = 0; i < responseMessage.Content.Length; i++)
+        //skip this if not monster spawns
+        if (responseMessage.Content[0] == '[')
         {
-            if (responseMessage.Content[i] == ']')
+            int i;  //start parsing string
+            for (i = 0; i < responseMessage.Content.Length; i++)
             {
-                temp = responseMessage.Content.Substring(i + 1);
-                break;
+                if (responseMessage.Content[i] == ']')
+                {
+                    break;
+                }
+                if (responseMessage.Content[i] != ',')
+                {
+                    enemyType += responseMessage.Content[i];
+                }
             }
-            if (responseMessage.Content[i] != ',')
+            int counter = i;    //need since for loops must be initialized in C#
+
+            for (i = counter + 1; i < responseMessage.Content.Length; i++)
             {
-                enemyType += responseMessage.Content[i];
+                if (responseMessage.Content[i] == ']')
+                {
+                    temp = responseMessage.Content.Substring(i + 1);
+                    break;
+                }
+
+                if (responseMessage.Content[i] != ']')
+                {
+                    monsterDescription += responseMessage.Content[i];
+                }
+            }
+            numEnemies = (int)enemyType[enemyType.Length - 1] - 48;     //gives ASCI value must subtract
+
+            //Debug.Log(numEnemies);
+            enemyType = enemyType.Substring(0, enemyType.Length - 2);
+            //Debug.Log(enemyType);
+
+
+            Debug.Log(monsterDescription);
+
+            //spawn enemies only if detect enemy
+            if (enemyType.Length > 0)
+            {
+                enemySpawner.doorSpawnEnemy(numEnemies);
             }
         }
-        int counter = i;    //need since for loops must be initialized in C#
 
-        for (i = counter + 1; i < responseMessage.Content.Length; i++)
-        {
-            if (responseMessage.Content[i] == ']') 
-            {
-                break;
-            }
-
-            if (responseMessage.Content[i] != ']')
-            {
-                monsterDescription += responseMessage.Content[i];
-            }
-        }
-        numEnemies = (int)enemyType[enemyType.Length - 1] - 48;     //gives ASCI value must subtract
-
-        //Debug.Log(numEnemies);
-        enemyType = enemyType.Substring(0, enemyType.Length - 2);
-        //Debug.Log(enemyType);
-        
-
-        Debug.Log(monsterDescription);
-
-        //spawn enemies only if detect enemy
-        if (enemyType.Length > 0)
-        {
-            enemySpawner.doorSpawnEnemy(numEnemies);
-        }
 
         //add response to list of messages
         messages.Add(responseMessage);
 
         //update text field with response
-        textField.text += string.Format("You: {0}\n\nDM: {1}\n\n", userMessage.Content, temp);
-        
+        if (temp.Length > 0)
+        {
+            textField.text += string.Format("You: {0}\n\nDM: {1}\n\n", userMessage.Content, temp);
+        }
+        else
+        {
+            textField.text += string.Format("DM: {0}\n\n", responseMessage.Content);
+        }
+
         //reactivate button
         okButton.enabled = true;
     }
