@@ -394,6 +394,7 @@ public class tileSpawner : MonoBehaviour
 
     private void setPlayer(){
         player.transform.position = roomCenters[generatedRooms[0]];
+        manager.disableDoors(roomCenters[generatedRooms[0]]);
     }
 
     public Dictionary<BoundsInt, Vector3Int> GetDictionary(){
