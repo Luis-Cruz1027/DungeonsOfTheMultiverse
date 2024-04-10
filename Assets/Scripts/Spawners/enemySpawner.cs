@@ -11,12 +11,17 @@ using Random=UnityEngine.Random;
 
 public class enemySpawner : MonoBehaviour
 {
+    //Add List of sprites
+    public Sprite[] listOfImages;
+
     [SerializeField] private Image image;
     
     [SerializeField] private Tilemap dungeon;
     
     public SpriteRenderer spriteRenderer;
     public GameObject Goblin;
+
+    public bool loadScreen = true;
 
     private OpenAIController controller;
     private imageGeneration imagegeneration;
@@ -27,7 +32,7 @@ public class enemySpawner : MonoBehaviour
     private List<BoundsInt> generatedRooms;
     private TileManager manager;
 
-    private void Start()
+    private IEnumerator Start()
     {
         tileSpawner myspawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
         manager = GameObject.FindGameObjectWithTag("TileManager").GetComponent<TileManager>();
@@ -35,8 +40,55 @@ public class enemySpawner : MonoBehaviour
         generatedRooms = myspawner.GetList();
         imagegeneration = GameObject.FindGameObjectWithTag("ImageMaker").GetComponent<imageGeneration>();
         controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OpenAIController>();
+
+        //tempary dictionary change to monsters chatagpt gives
+        Dictionary<string, string> demo = new Dictionary<string, string> { 
+            { "goblin", "A close-up, ink drawing, gothic fantasy picture of a singular goblin with sharp fangs, pointy ears, and malicious grins, wielding rusty weapons." },
+            { "vampire", "An eerie, digital painting of a vampire emerging from the shadows, with pale skin, crimson eyes, and elongated fangs glistening." },
+            { "ghoul", "A sinister digital painting capturing the ghastly appearance of a singular ghoul with rotting flesh, jagged teeth, and sunken, malevolent eyes." }
+        };
+
+        //count couroutine
+        int coroutineCount = 0;
+
+        //instantiate list of images during runtime
+        List<Sprite> tempImageList = new List<Sprite>();
+
+        foreach (KeyValuePair<string, string> item in demo)
+        {
+            coroutineCount++;
+            //Debug.Log(item.Key + " " + item.Value);
+            //create images and set them in sprite list and add each element to instantiated list
+            StartCoroutine(imagegeneration.helperFunc(item.Value, () =>  //change contoller.description to be each monster description from dictionary
+                {
+                    Debug.Log("Made url for image");
+                    StartCoroutine(urlImageLoader(imagegeneration.url, tempImageList, () =>
+                    {
+                        Debug.Log("created and added " + item.Key + "sprite to list");
+                        coroutineCount--;
+                    }));
+                }));
+
+        }
+        
+
+        // Wait until all coroutines finish
+        while (coroutineCount > 0)
+        {
+            yield return null;
+        }
+
+        // Once all coroutines finish do this
+        listOfImages = tempImageList.ToArray();
+        Debug.Log("all images generated in list");
+        Debug.Log(listOfImages.Length);
+
+        //set bool to false to get rid of load screen
+        loadScreen = false;
     }
-    private IEnumerator urlImageLoader(string link, Action callback)
+
+
+    private IEnumerator urlImageLoader(string link, List<Sprite> tempList, Action callback)
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(link);
         yield return request.SendWebRequest();
@@ -52,7 +104,10 @@ public class enemySpawner : MonoBehaviour
             {
                 Sprite newSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 800);
 
-                image.sprite = newSprite;
+                //add sprite to list of images
+                tempList.Add(newSprite);
+
+                //image.sprite = newSprite;
             }
             else
             {
@@ -72,31 +127,23 @@ public class enemySpawner : MonoBehaviour
         foreach(var room in roomCenters.Values){
             if(new Vector3Int(room.x - 4, room.y, 0) == doorpos || new Vector3Int(room.x + 4, room.y, 0 ) == doorpos || new Vector3Int(room.x, room.y - 4, 0 ) == doorpos || new Vector3Int(room.x, room.y + 4, 0 ) == doorpos){
                     roomCenterActual = room;
-                    Debug.Log("We in here?");
+                    Debug.Log("We in here? " + room);
                     break;
             }
         }
-        imagegeneration.makeURLImages(controller.monsterDescription, () =>           //need to modify so that it changes it from Goblin to monster description AiImageGeneration.
-        {
-            StartCoroutine(urlImageLoader(imagegeneration.url, () =>
-            {
-                if (semaphore)
-                {
-                    spriteRenderer.sprite = image.sprite;
-                    spriteRenderer = Goblin.GetComponent<SpriteRenderer>();
+        
+        //spawn enemy in bounds, and add sprite from list of sprites to prefab
 
-                    for (int i = 0; i < numEnemies; i++)
-                    {
-                        Instantiate(Goblin, new Vector3(Random.Range(dungeon.CellToWorld(new Vector3Int(roomCenterActual.x - 3, roomCenterActual.y, 0)).x, dungeon.CellToWorld(new Vector3Int(roomCenterActual.x + 3, roomCenterActual.y, 0)).x), Random.Range(dungeon.CellToWorld(new Vector3Int(roomCenterActual.x, roomCenterActual.y - 3, 0)).y, dungeon.CellToWorld(new Vector3Int(roomCenterActual.x, roomCenterActual.y + 3, 0)).y), 0), Quaternion.identity);
-                        Debug.Log("spawned enemy, " + i);
-                    }
-                    manager.disableDoors(roomCenterActual);
-                }
-                else
-                {
-                    Debug.Log("need to wait until testURL finishes");
-                }
-            }));
-        });
+        spriteRenderer.sprite = listOfImages[0];       //change to what enemy chatgpt wants to spawn from list
+        spriteRenderer = Goblin.GetComponent<SpriteRenderer>();
+
+        //spawn number of enemies based on what ChatGpt says
+        for (int i = 0; i < numEnemies; i++)
+        {
+            Instantiate(Goblin, new Vector3(Random.Range(dungeon.CellToWorld(new Vector3Int(roomCenterActual.x - 3, roomCenterActual.y, 0)).x, dungeon.CellToWorld(new Vector3Int(roomCenterActual.x + 3, roomCenterActual.y, 0)).x), Random.Range(dungeon.CellToWorld(new Vector3Int(roomCenterActual.x, roomCenterActual.y - 3, 0)).y, dungeon.CellToWorld(new Vector3Int(roomCenterActual.x, roomCenterActual.y + 3, 0)).y), 0), Quaternion.identity);
+            Debug.Log("spawned enemy, " + i);
+        }
+
+        manager.disableDoors(roomCenterActual);
     }
 }
