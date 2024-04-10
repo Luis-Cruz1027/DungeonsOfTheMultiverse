@@ -14,19 +14,33 @@ public class imageGeneration : MonoBehaviour
     private OpenAIAPI api;
     public string url;
 
-    void Start()
+    void Awake()
     {
         api = new OpenAIAPI("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");
 
         //makeURLImages("A red dragon from mediaval times spewing fire from its mouth", () => { });
     }
 
-    public async void makeURLImages(string prompt, Action callback) {
+    public IEnumerator helperFunc(string prompt, Action callback)
+    {
+        yield return makeURLImages(prompt, callback);
+    }
 
-        var result = await api.ImageGenerations.CreateImageAsync(prompt);
-        url = result.ToString();
-        //Debug.Log(url);
+    public async Task makeURLImages(string prompt, Action callback)
+    {
+        try
+        {
+            Debug.Log("making url and waiting...");
+            Debug.Log(prompt);
+            var result = await api.ImageGenerations.CreateImageAsync(prompt);
+            url = result.ToString();
+            Debug.Log(url);
 
-        callback.Invoke();
+            callback.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("An error occurred while creating URL: " + ex.Message);
+        }
     }
 }
