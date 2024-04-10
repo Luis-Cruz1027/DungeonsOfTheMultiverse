@@ -18,14 +18,13 @@ public class OpenAIController : MonoBehaviour
     private string someText;
     private string temp;
     //spawner variables and GameObjects
-    private enemySpawner enemySpawner;
+    private enemySpawner enemySpawn;
     public string enemyType;
     public int numEnemies;
     public string monsterDescription;
 
     public TMP_Text textField;
     //public TMP_InputField inputField;
-    public Button okButton;
     public Dictionary<string, string> monsters;
     public StartMenu startMenu;
 
@@ -36,10 +35,7 @@ public class OpenAIController : MonoBehaviour
 
         api = new OpenAIAPI("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");
         StartConversation();
-        okButton.onClick.AddListener(() => GetResponse(someText));
 
-        //initialize spawners
-        enemySpawner = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
         startMenu = GameObject.FindGameObjectWithTag("StartMenu").GetComponent<StartMenu>();
     }
 
@@ -56,13 +52,20 @@ public class OpenAIController : MonoBehaviour
 
     public async void GetResponse(string response)
     {
+        //inizialize spawner here since start runs once on seperate scene
+        enemySpawn = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
+
+
         //disable button for no spam and reset variables
-        okButton.enabled = false;
 
         //reset variables on each call
-        enemyType = "";
-        numEnemies = 0;
+
+        
+        enemyType = "Monster";
+        /*
+        numEnemies = 0;                 fix this
         monsterDescription = "";
+        */
         temp = "";
 
         //fill message into inputfield
@@ -131,7 +134,7 @@ public class OpenAIController : MonoBehaviour
             //spawn enemies only if detect enemy
             if (enemyType.Length > 0)
             {
-                enemySpawner.doorSpawnEnemy(numEnemies);
+                enemySpawn.doorSpawnEnemy(3);         //change to numEnemies
             }
         }
 
@@ -148,9 +151,7 @@ public class OpenAIController : MonoBehaviour
         {
             textField.text += string.Format("DM: {0}\n\n", responseMessage.Content);
         }
-
-        //reactivate button
-        okButton.enabled = true;
+        
     }
 
     public async void loadMonsters(){

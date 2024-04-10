@@ -21,8 +21,6 @@ public class enemySpawner : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public GameObject Goblin;
 
-    public bool loadScreen = true;
-
     private OpenAIController controller;
     private imageGeneration imagegeneration;
     private string testURL = "https://lh3.googleusercontent.com/fife/ALs6j_G_cjI4zQOGEI9oTz9wv5Hn8vigeLVCBecvzz-eFcq06DnY6TzAU-ydcAQQgke3E2FGvoj14Gm5nwMZTsJJkoPckh0Zf_7NlYgn43XgLfLycaqujS4eJQHa_l9UG3g0T5em8w7yMAv33tJEItXxMdl11nRo8alYxCyOXLXEtS2wzELKin3HXvmw4bJJw1lx3QdKvITjAf704957JciugUSztNfCtQAaoYlfMd-fRMfSanNs9VqOAsl3cDW9Rh03RS8Z_RovK-v27Xk25MiM1rMdYvjsJLLmsBnAaZBc6UKQ13K5kq7wpEjE4kbB5xeeFlviCxFEIWpUwjHVqgkXIC_DTm44pFE10S0dBgcBSEvVqoQu6j1rDg9bH8vLlwYkm8DlmOxVH8QYkZZgCh6EUzNMKrs7WIAbNrWcdfLlLF011Hydn1ZUVsjVUwzdqjnZtcqVNABMwu7uJhkbU9eA27NuOQL7hcHlg869o1kED3mydIOIxXKajR4b7RnWkGh0-xXK8_dmKpKtBXv-3TRhFOEfNpvjHO_P_DBIvnesAhGvP8zv73x7zUGxfKjhYlBNmrcBxbxBshXERhrRrsLLyFzeGJYXyk8k7QLzlzbmHMln3XIdkDvsO4kI1LQdgfeQ6cW8KYSNpCXW7LT5_oINEawBXxq_YHRnhI_seibwNfowHiLtBXCkieb5OJ-p3z7siqCgL6D4zJo4RZty7SGodgnkJ4a-_aRyA0y3an18z_YEy5OX6u0omaV9i5LJSXmQVD7gdP7n7-U2LxHlfQtxVXJfg5VNtFO5lnsQ5_WowGY40CdruhMkFdhqiEg0mNMxJoWStm8cHdq0evefEsbMSx8dgxRFnpf_BkX-fu9ush2y6CtzxuJPX8ldXtyXU7z1pJhrm4VOgjo7voHFXaStKe2EOkLP7OuQLY799VSc_lCVxl4cbEP5BKX8r9tFJo1nSim-BH_XM0siO1Vkg_QXGFakwZz9y25R205fEgrQMHCPg5MJrYbGmZi3_Lp4xvnkM3V3C5ESuPsFFu7JzplS4fuPYoxil4I0xOkxz9k59nCBbirif7UUUJKsXhzgFOPrbWOoRjAR8x8gzziiuYgfKsONKIImlurbdb7tqcCKfFLmlxUNpcUlXc6meUVXXBF6Vwu50IEjv-udNyFI2-nOn9ituduFWRkAwq7PgAiaqr4Ahi2fmUZjLp5RO8psQcaWPmRv2qVwdhH8Rq5arvWcRlLQd4EFbLLWO_BzRZRc2rUwz6MMHod8VAa0kvj-Jxqn3k3u5XGjCqbseIt7BJ0uVmGNl20E_5oNalRmbwlcerGx8_Ets8PQ4v_WpFBw5wRi2Hqq-d7nJAE4ml_hitqQFpnPQ52-TzX_X7PPfjXJasUcFpUoglxmOFPfGt2eGCEmjJEt8vDlNMicXoO62UodOLJBSWUUCbaaEG8snm7eoeftDikjLsLJIoUU3nBlUt_A1OP4anqS754oa-qxiPmYNEdu9DcVOmMZBWqt7tYebTSydLmq8rIle4nOinhnegIqSklqF9QrHqklhQs=w1920-h953";
@@ -31,22 +29,17 @@ public class enemySpawner : MonoBehaviour
     private Dictionary<BoundsInt, Vector3Int> roomCenters;
     private List<BoundsInt> generatedRooms;
     private TileManager manager;
+    private StartMenu startmenu;
 
     private IEnumerator Start()
     {
+        startmenu = GameObject.FindGameObjectWithTag("StartMenu").GetComponent<StartMenu>();
         tileSpawner myspawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
         manager = GameObject.FindGameObjectWithTag("TileManager").GetComponent<TileManager>();
         roomCenters = myspawner.GetDictionary();
         generatedRooms = myspawner.GetList();
         imagegeneration = GameObject.FindGameObjectWithTag("ImageMaker").GetComponent<imageGeneration>();
-        controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OpenAIController>();
-
-        //tempary dictionary change to monsters chatagpt gives
-        Dictionary<string, string> demo = new Dictionary<string, string> { 
-            { "goblin", "A close-up, ink drawing, gothic fantasy picture of a singular goblin with sharp fangs, pointy ears, and malicious grins, wielding rusty weapons." },
-            { "vampire", "An eerie, digital painting of a vampire emerging from the shadows, with pale skin, crimson eyes, and elongated fangs glistening." },
-            { "ghoul", "A sinister digital painting capturing the ghastly appearance of a singular ghoul with rotting flesh, jagged teeth, and sunken, malevolent eyes." }
-        };
+        controller = GameObject.FindGameObjectWithTag("StartMenu").GetComponentInChildren<OpenAIController>();
 
         //count couroutine
         int coroutineCount = 0;
@@ -54,7 +47,7 @@ public class enemySpawner : MonoBehaviour
         //instantiate list of images during runtime
         List<Sprite> tempImageList = new List<Sprite>();
 
-        foreach (KeyValuePair<string, string> item in demo)
+        foreach (KeyValuePair<string, string> item in controller.monsters)
         {
             coroutineCount++;
             //Debug.Log(item.Key + " " + item.Value);
@@ -84,7 +77,7 @@ public class enemySpawner : MonoBehaviour
         Debug.Log(listOfImages.Length);
 
         //set bool to false to get rid of load screen
-        loadScreen = false;
+        startmenu.LoadMenu.SetActive(false);
     }
 
 
@@ -106,8 +99,6 @@ public class enemySpawner : MonoBehaviour
 
                 //add sprite to list of images
                 tempList.Add(newSprite);
-
-                //image.sprite = newSprite;
             }
             else
             {
@@ -121,7 +112,7 @@ public class enemySpawner : MonoBehaviour
 
     public void doorSpawnEnemy(int numEnemies)
     {
-        //Debug.Log(controller.monsterDescription);
+        Debug.Log("spawning enemies");
         Vector3Int doorpos = manager.getDoorPos();
         Vector3Int roomCenterActual = new Vector3Int(0,0,0);
         foreach(var room in roomCenters.Values){
@@ -132,8 +123,8 @@ public class enemySpawner : MonoBehaviour
             }
         }
         
-        //spawn enemy in bounds, and add sprite from list of sprites to prefab
-
+      
+        //search through dictionary and find and pop monster from dictionary. check to see if bad request.
         spriteRenderer.sprite = listOfImages[0];       //change to what enemy chatgpt wants to spawn from list
         spriteRenderer = Goblin.GetComponent<SpriteRenderer>();
 
