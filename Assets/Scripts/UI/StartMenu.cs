@@ -48,7 +48,6 @@ public class StartMenu : MonoBehaviour
 
     public void Update(){
         if(LoadingBarFill.value == 1){
-            LoadMenu.SetActive(false);
             SceneManager.LoadScene("DungeonScene");
             LoadingBarFill.value = 0;
         }
