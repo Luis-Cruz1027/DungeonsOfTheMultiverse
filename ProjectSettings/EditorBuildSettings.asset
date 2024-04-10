@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DungeonScene.unity
     guid: 06204abd4d3e5724d82e800f14eac21a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/testSceneDONOTSAVE.unity
     guid: b37386e1854bf6c4eb08167d281ecb7f
   m_configObjects: {}

@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class OpenAIController : MonoBehaviour
 {
@@ -17,7 +17,6 @@ public class OpenAIController : MonoBehaviour
     private List<ChatMessage> messages;
     private string someText;
     private string temp;
-    private string testURL = "https://drive.google.com/drive/folders/1l5ecWVskqufnRowYNbE3HUAM4FgMM76P";
     //spawner variables and GameObjects
     private enemySpawner enemySpawner;
     public string enemyType;
@@ -27,18 +26,21 @@ public class OpenAIController : MonoBehaviour
     public TMP_Text textField;
     //public TMP_InputField inputField;
     public Button okButton;
+    public Dictionary<string, string> monsters;
+    public StartMenu startMenu;
 
     // Start is called before the first frame update
     void Start()
     {
         someText = "The party enters a new room.";
 
-        api = new OpenAIAPI("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");
+        api = new OpenAIAPI("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");
         StartConversation();
         okButton.onClick.AddListener(() => GetResponse(someText));
 
         //initialize spawners
         enemySpawner = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
+        startMenu = GameObject.FindGameObjectWithTag("StartMenu").GetComponent<StartMenu>();
     }
 
     private void StartConversation()
@@ -149,5 +151,39 @@ public class OpenAIController : MonoBehaviour
 
         //reactivate button
         okButton.enabled = true;
+    }
+
+    public async void loadMonsters(){
+        monsters = new Dictionary<string,string>(); 
+        var chat = api.Chat.CreateConversation();
+        for(int i = 0; i < 5; i++){
+            chat.AppendUserInput("Give the name of a monster from dungeons and dragons and it's description, separated by a comma. You can make up the monsters as well as long as they fit the theme of Dungeons and Dragons");
+            string monster = await chat.GetResponseFromChatbot();
+
+            string monsterName = "";
+            int index = 0;
+            for(int j = 0; j < monster.Length; j++){
+                if(monster[j] == ','){
+                    index = j + 1;
+                    break;
+                }
+                else{
+                    monsterName += monster[j];
+                }
+            }
+            
+            string monsterDesc = "";
+            for(int k = index; k < monster.Length; k++){
+                if(monster[k] == null){
+                    break;
+                }
+                monsterDesc += monster[k];
+            }
+            
+            monsters.Add(monsterName, monsterDesc);
+            Debug.Log(monsterName + " " + monsterDesc);
+            startMenu.changeLoadingBar(i + 1);
+            // await Task.Delay(3000);
+        }
     }
 }

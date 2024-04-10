@@ -10,6 +10,7 @@ TagManager:
   - ImageMaker
   - TileManager
   - Dungeon
+  - AIController
   layers:
   - Default
   - TransparentFX
