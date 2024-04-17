@@ -29,8 +29,7 @@ public class TileManager : MonoBehaviour
         doorNames = new List<Vector3>();
         
         allTiles = new List<Vector3Int>();
-        //append list of monsters to end of new room text
-        newRoomText = "The party enters a new room.";
+        
         controller = GameObject.FindGameObjectWithTag("StartMenu").GetComponentInChildren<OpenAIController>();
 
         dataFromTiles = new Dictionary<TileBase, TileData>();
@@ -74,6 +73,8 @@ public class TileManager : MonoBehaviour
             else if (dataFromTiles[onTile].isDoor == true && !doorNames.Contains(POS))
             {
                 Debug.Log("door triggered.");
+                //append list of monsters to end of new room text
+                newRoomText = "The party enters a new room." + controller.monsterList;
                 controller.GetResponse(newRoomText);
                 dungeon.SetTile(POS, open);
             }

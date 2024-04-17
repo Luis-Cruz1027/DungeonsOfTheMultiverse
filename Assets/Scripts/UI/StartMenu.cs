@@ -48,9 +48,12 @@ public class StartMenu : MonoBehaviour
 
     public void Update(){
         if(LoadingBarFill.value == 1){
-            SceneManager.LoadScene("DungeonScene");
             LoadingBarFill.value = 0;
         }
+    }
+    public void loadScene()
+    {
+        SceneManager.LoadScene("DungeonScene");
     }
 
     public void SetCharacter(Character character)

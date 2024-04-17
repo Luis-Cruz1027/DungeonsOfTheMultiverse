@@ -55,9 +55,10 @@ public class enemySpawner : MonoBehaviour
             StartCoroutine(imagegeneration.helperFunc(item.Value, () =>  //change contoller.description to be each monster description from dictionary
                 {
                     Debug.Log("Made url for image");
-                    StartCoroutine(urlImageLoader(imagegeneration.url, tempImageList, () =>
+
+                    StartCoroutine(urlImageLoader(imagegeneration.url, tempImageList, item.Key, () =>
                     {
-                        Debug.Log("created and added " + item.Key + "sprite to list");
+                        Debug.Log("created and added " + item.Key + " sprite to list");
                         coroutineCount--;
                     }));
                 }));
@@ -81,7 +82,7 @@ public class enemySpawner : MonoBehaviour
     }
 
 
-    private IEnumerator urlImageLoader(string link, List<Sprite> tempList, Action callback)
+    private IEnumerator urlImageLoader(string link, List<Sprite> tempList, string monsterName, Action callback)
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(link);
         yield return request.SendWebRequest();
@@ -98,6 +99,8 @@ public class enemySpawner : MonoBehaviour
                 Sprite newSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 800);
 
                 //add sprite to list of images
+                Debug.Log(monsterName + " added to array of sprites");
+                newSprite.name = monsterName;
                 tempList.Add(newSprite);
             }
             else
@@ -110,9 +113,9 @@ public class enemySpawner : MonoBehaviour
         callback.Invoke();
     }
 
-    public void doorSpawnEnemy(int numEnemies)
+    public void doorSpawnEnemy(int numEnemies, string monsterType)
     {
-        Debug.Log("spawning enemies");
+        Debug.Log("spawning enemies in doorSpawn enemy type: " + monsterType);
         Vector3Int doorpos = manager.getDoorPos();
         Vector3Int roomCenterActual = new Vector3Int(0,0,0);
         foreach(var room in roomCenters.Values){
@@ -125,8 +128,16 @@ public class enemySpawner : MonoBehaviour
         
       
         //search through dictionary and find and pop monster from dictionary. check to see if bad request.
-        spriteRenderer.sprite = listOfImages[0];       //change to what enemy chatgpt wants to spawn from list
-        spriteRenderer = Goblin.GetComponent<SpriteRenderer>();
+        for (int i = 1; i < listOfImages.Length - 1; i++)
+        {
+            if (listOfImages[i].name == monsterType)
+            {
+                Debug.Log("loading sprite");
+                spriteRenderer.sprite = listOfImages[i];       //change to what enemy chatgpt wants to spawn from list
+                spriteRenderer = Goblin.GetComponent<SpriteRenderer>();
+                break;
+            }
+        }
 
         //spawn number of enemies based on what ChatGpt says
         for (int i = 0; i < numEnemies; i++)
