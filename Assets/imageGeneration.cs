@@ -16,7 +16,7 @@ public class imageGeneration : MonoBehaviour
 
     void Awake()
     {
-        api = new OpenAIAPI("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");
+        api = new OpenAIAPI("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");
 
         //makeURLImages("A red dragon from mediaval times spewing fire from its mouth", () => { });
     }
