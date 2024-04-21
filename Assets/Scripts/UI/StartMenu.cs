@@ -14,7 +14,6 @@ public class StartMenu : MonoBehaviour
     public GameObject TitleMenu;
     public GameObject charMenu;
     public GameObject LoadMenu;
-    public Slider LoadingBarFill;
 
     public static StartMenu instance;
     public Character[] characters;
@@ -46,22 +45,17 @@ public class StartMenu : MonoBehaviour
         apiController = GameObject.Find("AIController").GetComponent<OpenAIController>();
     }
 
-    public void Update(){
-        if(LoadingBarFill.value == 1){
-            LoadMenu.SetActive(false);
-            SceneManager.LoadScene("DungeonScene");
-            LoadingBarFill.value = 0;
-        }
-    }
 
     public void SetCharacter(Character character)
     {
         currentCharacter = character;
     }
-    public async void playGame()
+    public void playGame()
     {
         charMenu.SetActive(false);
         LoadMenu.SetActive(true);
+        SceneManager.LoadScene(1);
+        StartCoroutine(WaitFor(1f));
         apiController.loadMonsters();
     }
 
@@ -79,7 +73,7 @@ public class StartMenu : MonoBehaviour
         charMenu.SetActive(true);
     }
 
-    public void changeLoadingBar(int i, int size = 5){
-        LoadingBarFill.value = i/size;
+    private IEnumerator WaitFor(float delay){
+        yield return new WaitForSeconds(delay);
     }
 }

@@ -29,6 +29,8 @@ public class OpenAIController : MonoBehaviour
     public Dictionary<string, string> monsters;
     public StartMenu startMenu;
 
+    private tileSpawner theSpawner;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -154,9 +156,10 @@ public class OpenAIController : MonoBehaviour
     }
 
     public async void loadMonsters(){
+        theSpawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
         monsters = new Dictionary<string,string>(); 
         var chat = api.Chat.CreateConversation();
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < theSpawner.GetList().Count; i++){
             chat.AppendUserInput("Give the name of a monster from dungeons and dragons and it's description, separated by a comma. You can make up the monsters as well as long as they fit the theme of Dungeons and Dragons");
             string monster = await chat.GetResponseFromChatbot();
 
@@ -182,8 +185,8 @@ public class OpenAIController : MonoBehaviour
             
             monsters.Add(monsterName, monsterDesc);
             Debug.Log(monsterName + " " + monsterDesc);
-            startMenu.changeLoadingBar(i + 1);
             // await Task.Delay(3000);
         }
+        Debug.Log("got out of the loop successfully!");
     }
 }
