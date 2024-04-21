@@ -30,6 +30,8 @@ public class OpenAIController : MonoBehaviour
     public Dictionary<string, string> monsters;
     public StartMenu startMenu;
 
+    private tileSpawner theSpawner;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -154,13 +156,13 @@ public class OpenAIController : MonoBehaviour
     }
 
     public async void loadMonsters(){
+        theSpawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
         monsters = new Dictionary<string,string>(); 
         var chat = api.Chat.CreateConversation();
 
-        monsterList = "[";
+        for(int i = 0; i < theSpawner.GetList().Count; i++){
+            chat.AppendUserInput("Give the name of a monster from dungeons and dragons and it's description, separated by a comma. You can make up the monsters as well as long as they fit the theme of Dungeons and Dragons");
 
-        for(int i = 0; i < 5; i++){
-            chat.AppendUserInput("You will create monsters from the Dungeon and Dragons Handbook every time you are called.\r\n\r\nYou will start the your response the name of the monster followed by a comma then you will provide a visual description of a singular monster for a Dall-E prompt.\r\nThe prompts must always be close ups, digital painting, and gothic fantasy style.\r\n\r\nExample of your response: \r\nSpectral Wraith, A close up shot, digital painting, gothic fantasy picture of a wraith with tattered robes and dark backlighting.");
             string monster = await chat.GetResponseFromChatbot();
 
             string monsterName = "";
@@ -187,12 +189,9 @@ public class OpenAIController : MonoBehaviour
             
             monsters.Add(monsterName, monsterDesc);
             Debug.Log(monsterName + " " + monsterDesc);
-            startMenu.changeLoadingBar(i + 1);
             // await Task.Delay(3000);
         }
+        Debug.Log("got out of the loop successfully!");
 
-        monsterList += "]";
-
-        startMenu.loadScene();
     }
 }
