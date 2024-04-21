@@ -56,7 +56,6 @@ public class StartMenu : MonoBehaviour
         LoadMenu.SetActive(true);
         SceneManager.LoadScene(1);
         StartCoroutine(WaitFor(1f));
-        apiController.loadMonsters();
     }
 
     public void quitGame()
@@ -75,5 +74,7 @@ public class StartMenu : MonoBehaviour
 
     private IEnumerator WaitFor(float delay){
         yield return new WaitForSeconds(delay);
+
+        apiController.loadMonsters();
     }
 }

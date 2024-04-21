@@ -41,6 +41,8 @@ public class imageGeneration : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError("An error occurred while creating URL: " + ex.Message);
+
+            callback.Invoke();
         }
     }
 }
