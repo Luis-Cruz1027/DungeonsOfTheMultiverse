@@ -1398,7 +1398,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fcdbe6e45b8c8c4cb03d14c1c50424e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterList: 
   enemyType: 
   numEnemies: 0
   monsterDescription: 

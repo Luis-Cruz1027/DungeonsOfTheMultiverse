@@ -22,8 +22,6 @@ public class StartMenu : MonoBehaviour
     private OpenAIAPI api;
     private OpenAIController apiController;
 
-    private GameObject canvas;
-
     private void Awake()
     {
         if (instance == null)
@@ -58,10 +56,6 @@ public class StartMenu : MonoBehaviour
         LoadMenu.SetActive(true);
         SceneManager.LoadScene(1);
         StartCoroutine(WaitFor(1f));
-        canvas = Camera.main.transform.GetChild(0).gameObject;
-        canvas.SetActive(true);
-        apiController.loadMonsters();
-        canvas.SetActive(true);
     }
 
     public void quitGame()
