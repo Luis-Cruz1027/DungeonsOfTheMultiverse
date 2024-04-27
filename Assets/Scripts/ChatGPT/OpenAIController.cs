@@ -48,25 +48,35 @@ public class OpenAIController : MonoBehaviour
     private void StartConversation()
     {
         messages = new List<ChatMessage> {
-            new ChatMessage(ChatMessageRole.System, "You are a Dungeon Master in a text based Dungeons and Dragons game. You will use Dungeons and Dragons handbook as reference.\r\n\r\nThe user will tell you once they enter a new room and give you a list of monsters that you will choose to decide which monster will spawn in the room.\r\n\r\nYour job will be to describe the room, decide if the party should do a AC check as soon as they enter the room based on location an, you must pick a single monster from a list of monsters given to you that will decide which monster will spawn in the given room, how many monsters, and describe the stats of the monsters they will face.  You will decide AC, HP, speed, and basic stats for the monsters. You will also decide what special abilities the monsters have.\r\n\r\nYou will start your response with the name of the monster followed a comma then the amount of monsters all be incased in brackets.\r\n\r\nExample of your response:\r\n[Spectral Wraiths, 2]\r\n\r\nAs the party steps into the room, they are met with a chilling sight of spectral wraiths gliding towards them, their incorporeal forms swaying with an otherworldly presence. The wraiths emit a faint, eerie glow that illuminates their tattered robes, giving them a ghastly appearance. Wisps of ethereal mist trail behind them, exuding an icy cold that sends shivers down the spines of the party members.\r\n\r\nDue to the spectral nature of the wraiths, the party will need to do an AC check upon entering to see if they can resist the wraiths' chilling touch.\r\n\r\nNumber of Monsters: 2\r\n\r\nSpectral Wraith Stats:\r\n- AC: 12\r\n- HP: 30\r\n- Speed: 0 ft (Hover)\r\n- Immunities: Cold, Necrotic, Poison\r\n- Condition Immunities: Exhaustion, Poisoned, Charmed, Frightened\r\n- Special Ability: Chilling Touch - The spectral wraiths can reach out and touch a target within 5 feet. The target must succeed on a DC 11 Constitution saving throw or take 2d6 cold damage.") //Decides system personality
+            new ChatMessage(ChatMessageRole.System, "You are a Dungeon Master in a text based Dungeons and Dragons game. You will use Dungeon and Dragons handbook as reference.\r\n\r\nThe user will provide you with the list of monsters and if they are entering a room.\r\n\r\nYour job will be to describe the room, decide if the party should do a AC check as soon as they enter the room based on location and what enemy they will face. You must pick a single monster from a list of monsters given to you that will decide which monster will spawn in the given room, how many monsters, and describe the stats of the monsters they will face.  You will decide AC, HP, speed, and basic stats for the monsters. You will also decide what special abilities the monsters have.\r\n\r\nYou will start the your response with the name of the monster always in singular form followed by a comma then the amount of monsters all incased in brackets.\r\n\r\nExample of User message:\r\nThe Party enters a new room. [Venomous Dreadclaw, Blighted Banshee, Spectral Wraith]\r\n\r\nExample of your response:\r\n[Spectral Wraiths, 2]\r\n\r\nAs the party steps into the room, they are met with a chilling sight of spectral wraiths gliding towards them, their incorporeal forms swaying with an otherworldly presence. The wraiths emit a faint, eerie glow that illuminates their tattered robes, giving them a ghastly appearance. Wisps of ethereal mist trail behind them, exuding an icy cold that sends shivers down the spines of the party members.\r\n\r\nDue to the spectral nature of the wraiths, the party will need to do an AC check upon entering to see if they can resist the wraiths' chilling touch.\r\n\r\nNumber of Monsters: 2\r\n\r\nSpectral Wraith Stats:\r\n- AC: 12\r\n- HP: 30\r\n- Speed: 0 ft (Hover)\r\n- Immunities: Cold, Necrotic, Poison\r\n- Condition Immunities: Exhaustion, Poisoned, Charmed, Frightened\r\n- Special Ability: Chilling Touch - The spectral wraiths can reach out and touch a target within 5 feet. The target must succeed on a DC 11 Constitution saving throw or take 2d6 cold damage.") //Decides system personality
         };
 
         preGenMessages = new List<ChatMessage> {
-            new ChatMessage(ChatMessageRole.System, "Create a unique monster that you have not created yet from the Dungeon and Dragons Handbook.\r\n\r\nYou will start the your response the name of the monster followed by a comma then you will provide a visual description of a singular monster for a Dall-E prompt.\r\nThe prompts must always be close ups, digital painting, and gothic fantasy style.\r\n\r\nExample of your response: \r\nSpectral Wraith, A close up shot, digital painting, gothic fantasy picture of a wraith with tattered robes and dark backlighting. ") //Decides system personality
+            new ChatMessage(ChatMessageRole.System, "Create a single unique monster that you have not created yet from the Dungeon and Dragons Handbook.\r\n\r\nYou will start the your response the name of the monster followed by a comma then you will provide a visual description of a singular monster for a Dall-E prompt.\r\nThe prompts must always be close ups, digital painting, and gothic fantasy style.\r\n\r\nExample of your response: \r\nSpectral Wraith, A close up shot, digital painting, gothic fantasy picture of a wraith with tattered robes and dark backlighting. ") //Decides preGen prompt.
         };
     }
 
     public async void GetResponse(string response)
     {
-        textField = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<TMP_Text>();
-        //reset variables on each call
+        if (textField == null)
+        {
+            textField = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<TMP_Text>();
+        }
 
-
+        //reset variables on each call\
         enemyType = "";
         numEnemies = 0;
-        monsterDescription = "";
         temp = "";
 
+        //check which method called it to modify user prompt for chatchpt
+        if (response[0] == '/')
+        {
+            //do nothing prompt is fine
+        }
+        else {
+            //append monsterList to end of prompt so that chatgpt knows which monsters to look for
+            response = response + monsterList;
+        }
         //fill message into inputfield
         ChatMessage userMessage = new ChatMessage();
         userMessage.Role = ChatMessageRole.User;
@@ -115,20 +125,12 @@ public class OpenAIController : MonoBehaviour
                     temp = responseMessage.Content.Substring(i + 1);
                     break;
                 }
-
-                if (responseMessage.Content[i] != ']')
-                {
-                    monsterDescription += responseMessage.Content[i];
-                }
             }
             numEnemies = (int)enemyType[enemyType.Length - 1] - 48;     //gives ASCI value must subtract
 
             //Debug.Log(numEnemies);
             enemyType = enemyType.Substring(0, enemyType.Length - 2);
             //Debug.Log(enemyType);
-
-
-            Debug.Log(monsterDescription);
 
             //spawn enemies only if detect enemy
             if (enemyType.Length > 0)
