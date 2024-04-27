@@ -17,7 +17,7 @@ public class GameObjectRightClick : MonoBehaviour
         Menu.enabled = false;
 
         //reference chatgpt script
-        controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OpenAIController>();
+        controller = GameObject.FindGameObjectWithTag("StartMenu").GetComponentInChildren<OpenAIController>();
     }
 
     private void OnMouseOver()
@@ -36,7 +36,7 @@ public class GameObjectRightClick : MonoBehaviour
         //If counter reaches 0 send ChatGPT request.
         if (controller.numEnemies == 0)
         {
-            controller.GetResponse("All enemies have been slain, reward warriors with appropriate exp, with a 10% chance of enemy drops per enemy.");
+            controller.GetResponse("/ " + controller.enemyType + " has been slain, reward warriors with appropriate exp, with a 10% chance of enemy drops per enemy.");
         }
 
         //delete gameObject

@@ -74,7 +74,7 @@ public class TileManager : MonoBehaviour
             {
                 Debug.Log("door triggered.");
                 //append list of monsters to end of new room text
-                newRoomText = "The party enters a new room." + controller.monsterList;
+                newRoomText = "The party enters a new room.";
                 controller.GetResponse(newRoomText);
                 dungeon.SetTile(POS, open);
             }

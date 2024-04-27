@@ -9,6 +9,8 @@ using UnityEngine.Tilemaps;
 using Random=UnityEngine.Random;
 using NUnit.Framework.Constraints;
 using TMPro;
+using NUnit.Framework;
+using System.Threading;
 
 
 public class enemySpawner : MonoBehaviour
@@ -127,7 +129,6 @@ public class enemySpawner : MonoBehaviour
     {
         string tempMonster = monsterType.Substring(1);
         Debug.Log("spawning enemies in doorSpawn enemy type: " + tempMonster);
-
         Vector3Int doorpos = manager.getDoorPos();
         Vector3Int roomCenterActual = new Vector3Int(0,0,0);
         foreach(var room in roomCenters.Values){
@@ -137,19 +138,47 @@ public class enemySpawner : MonoBehaviour
                     break;
             }
         }
-      
-        //search through dictionary and find and pop monster from dictionary. check to see if bad request.
+
+        //check for plural or singular cases
+
+        // List of monsters in dictionary before pop for debugging only
+        foreach (KeyValuePair<string, string> item in controller.monsters)
+        {
+            Debug.Log(item.Key + " ");
+        }
+
+        //search through dictionary and find and pop monster from dictionary.
         for (int i = 0; i < listOfImages.Length; i++)
         {
             Debug.Log("searching monster in loop, " + listOfImages[i].name);
             if (listOfImages[i].name == tempMonster)
             {
                 Debug.Log("loading sprite");
-                spriteRenderer.sprite = listOfImages[i];       //change to what enemy chatgpt wants to spawn from list
+                spriteRenderer.sprite = listOfImages[i];
                 spriteRenderer = Goblin.GetComponent<SpriteRenderer>();
+
+                //pop monster from dictionary
+                controller.monsters.Remove(tempMonster);
                 break;
             }
         }
+
+        //List of monsters ion dictionay after pop for debugging only
+        foreach (KeyValuePair<string, string> item in controller.monsters)
+        {
+            Debug.Log(item.Key + " ");
+        }
+
+        //Create new monster List
+        controller.monsterList = "[";
+
+        foreach (KeyValuePair<string, string> Item in controller.monsters)
+        {
+            Debug.Log(Item.Key + " ");
+            controller.monsterList += Item.Key + ", ";
+        }
+
+        controller.monsterList += "]";
 
         //spawn number of enemies based on what ChatGpt says
         for (int i = 0; i < numEnemies; i++)
