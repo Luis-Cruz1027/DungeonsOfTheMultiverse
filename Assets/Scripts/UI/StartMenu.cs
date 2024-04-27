@@ -58,10 +58,13 @@ public class StartMenu : MonoBehaviour
         LoadMenu.SetActive(true);
         SceneManager.LoadScene(1);
         StartCoroutine(WaitFor(1f));
+<<<<<<< HEAD
         canvas = Camera.main.transform.GetChild(0).gameObject;
         canvas.SetActive(true);
         apiController.loadMonsters();
         canvas.SetActive(true);
+=======
+>>>>>>> 733f622df1120a116999281596d420631950468b
     }
 
     public void quitGame()
@@ -80,5 +83,7 @@ public class StartMenu : MonoBehaviour
 
     private IEnumerator WaitFor(float delay){
         yield return new WaitForSeconds(delay);
+
+        apiController.loadMonsters();
     }
 }

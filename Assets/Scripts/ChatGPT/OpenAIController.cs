@@ -16,6 +16,7 @@ public class OpenAIController : MonoBehaviour
 {
     private OpenAIAPI api;
     private List<ChatMessage> messages;
+    private List<ChatMessage> preGenMessages;
     public string monsterList;
     private string someText;
     private string temp;
@@ -24,6 +25,7 @@ public class OpenAIController : MonoBehaviour
     public string enemyType;
     public int numEnemies;
     public string monsterDescription;
+
 
     public TMP_Text textField;
     //public TMP_InputField inputField;
@@ -49,21 +51,17 @@ public class OpenAIController : MonoBehaviour
             new ChatMessage(ChatMessageRole.System, "You are a Dungeon Master in a text based Dungeons and Dragons game. You will use Dungeons and Dragons handbook as reference.\r\n\r\nThe user will tell you once they enter a new room and give you a list of monsters that you will choose to decide which monster will spawn in the room.\r\n\r\nYour job will be to describe the room, decide if the party should do a AC check as soon as they enter the room based on location an, you must pick a single monster from a list of monsters given to you that will decide which monster will spawn in the given room, how many monsters, and describe the stats of the monsters they will face.  You will decide AC, HP, speed, and basic stats for the monsters. You will also decide what special abilities the monsters have.\r\n\r\nYou will start your response with the name of the monster followed a comma then the amount of monsters all be incased in brackets.\r\n\r\nExample of your response:\r\n[Spectral Wraiths, 2]\r\n\r\nAs the party steps into the room, they are met with a chilling sight of spectral wraiths gliding towards them, their incorporeal forms swaying with an otherworldly presence. The wraiths emit a faint, eerie glow that illuminates their tattered robes, giving them a ghastly appearance. Wisps of ethereal mist trail behind them, exuding an icy cold that sends shivers down the spines of the party members.\r\n\r\nDue to the spectral nature of the wraiths, the party will need to do an AC check upon entering to see if they can resist the wraiths' chilling touch.\r\n\r\nNumber of Monsters: 2\r\n\r\nSpectral Wraith Stats:\r\n- AC: 12\r\n- HP: 30\r\n- Speed: 0 ft (Hover)\r\n- Immunities: Cold, Necrotic, Poison\r\n- Condition Immunities: Exhaustion, Poisoned, Charmed, Frightened\r\n- Special Ability: Chilling Touch - The spectral wraiths can reach out and touch a target within 5 feet. The target must succeed on a DC 11 Constitution saving throw or take 2d6 cold damage.") //Decides system personality
         };
 
-        string startString = "Welcome adventurer, you have just begun youre journey into this unforgiving dungeon.\n\n";
-        textField.text += startString;
+        preGenMessages = new List<ChatMessage> {
+            new ChatMessage(ChatMessageRole.System, "Create a unique monster that you have not created yet from the Dungeon and Dragons Handbook.\r\n\r\nYou will start the your response the name of the monster followed by a comma then you will provide a visual description of a singular monster for a Dall-E prompt.\r\nThe prompts must always be close ups, digital painting, and gothic fantasy style.\r\n\r\nExample of your response: \r\nSpectral Wraith, A close up shot, digital painting, gothic fantasy picture of a wraith with tattered robes and dark backlighting. ") //Decides system personality
+        };
     }
 
     public async void GetResponse(string response)
     {
-        //inizialize spawner here since start runs once on seperate scene
-        enemySpawn = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
-
-
-        //disable button for no spam and reset variables
-
+        textField = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<TMP_Text>();
         //reset variables on each call
 
-        
+
         enemyType = "";
         numEnemies = 0;
         monsterDescription = "";
@@ -158,40 +156,69 @@ public class OpenAIController : MonoBehaviour
     public async void loadMonsters(){
         theSpawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
         monsters = new Dictionary<string,string>(); 
-        var chat = api.Chat.CreateConversation();
+        //var chat = api.Chat.CreateConversation();
 
-        for(int i = 0; i < theSpawner.GetList().Count; i++){
-            chat.AppendUserInput("Give the name of a monster from dungeons and dragons and it's description, separated by a comma. You can make up the monsters as well as long as they fit the theme of Dungeons and Dragons");
 
-            string monster = await chat.GetResponseFromChatbot();
+        for(int i = 0; i < theSpawner.GetList().Count - 1; i++){
+            ChatMessage userMessage = new ChatMessage();
+            userMessage.Role = ChatMessageRole.User;
+            userMessage.Content = "Create a monster you haven't created yet.";
+
+            //add message to list
+            preGenMessages.Add(userMessage);
+
+            var chatResult = await api.Chat.CreateChatCompletionAsync(new ChatRequest()
+            {
+                Model = Model.ChatGPTTurbo,
+                Temperature = 1,
+                MaxTokens = 200,
+                Messages = preGenMessages
+            });
+
+            //string monster = await chat.GetResponseFromChatbot();
+            ChatMessage responseMessage = new ChatMessage();
+            responseMessage.Role = chatResult.Choices[0].Message.Role;
+            responseMessage.Content = chatResult.Choices[0].Message.Content;
 
             string monsterName = "";
             int index = 0;
-            for(int j = 0; j < monster.Length; j++){
-                if(monster[j] == ','){
+            for(int j = 0; j < responseMessage.Content.Length; j++){
+                if(responseMessage.Content[j] == ','){
                     index = j + 1;
                     monsterList += ", ";
                     break;
                 }
                 else{
-                    monsterName += monster[j];
-                    monsterList += monster[j];
+                    monsterName += responseMessage.Content[j];
+                    monsterList += responseMessage.Content[j];
                 }
             }
             
             string monsterDesc = "";
-            for(int k = index; k < monster.Length; k++){
-                if(monster[k] == null){
+            for(int k = index; k < responseMessage.Content.Length; k++){
+                if(responseMessage.Content[k] == null){
                     break;
                 }
-                monsterDesc += monster[k];
+                monsterDesc += responseMessage.Content[k];
             }
             
             monsters.Add(monsterName, monsterDesc);
             Debug.Log(monsterName + " " + monsterDesc);
             // await Task.Delay(3000);
+
+            //add response to list of messages to pregen list
+            preGenMessages.Add(responseMessage);
         }
+
+        //reference enemy spawner and call a method in it.
+        enemySpawn = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
+
         Debug.Log("got out of the loop successfully!");
+<<<<<<< HEAD
         
+=======
+
+        StartCoroutine(enemySpawn.preGenSpawner());
+>>>>>>> 733f622df1120a116999281596d420631950468b
     }
 }

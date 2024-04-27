@@ -7,6 +7,8 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine.Tilemaps;
 using Random=UnityEngine.Random;
+using NUnit.Framework.Constraints;
+using TMPro;
 
 
 public class enemySpawner : MonoBehaviour
@@ -31,7 +33,7 @@ public class enemySpawner : MonoBehaviour
     private TileManager manager;
     private StartMenu startmenu;
 
-    private IEnumerator Start()
+    void Start()
     {
         startmenu = GameObject.FindGameObjectWithTag("StartMenu").GetComponent<StartMenu>();
         tileSpawner myspawner = GameObject.FindGameObjectWithTag("TileManager").GetComponent<tileSpawner>();
@@ -40,6 +42,11 @@ public class enemySpawner : MonoBehaviour
         generatedRooms = myspawner.GetList();
         imagegeneration = GameObject.FindGameObjectWithTag("ImageMaker").GetComponent<imageGeneration>();
         controller = GameObject.FindGameObjectWithTag("StartMenu").GetComponentInChildren<OpenAIController>();
+    }
+
+    public IEnumerator preGenSpawner()
+    {
+        Debug.Log("We in here preGenSpawner");
 
         //count couroutine
         int coroutineCount = 0;
@@ -50,21 +57,21 @@ public class enemySpawner : MonoBehaviour
         foreach (KeyValuePair<string, string> item in controller.monsters)
         {
             coroutineCount++;
-            //Debug.Log(item.Key + " " + item.Value);
+            Debug.Log(item.Key + " " + item.Value);
             //create images and set them in sprite list and add each element to instantiated list
             StartCoroutine(imagegeneration.helperFunc(item.Value, () =>  //change contoller.description to be each monster description from dictionary
-                {
-                    Debug.Log("Made url for image");
+            {
+                Debug.Log("Made url for image");
 
-                    StartCoroutine(urlImageLoader(imagegeneration.url, tempImageList, item.Key, () =>
-                    {
-                        Debug.Log("created and added " + item.Key + " sprite to list");
-                        coroutineCount--;
-                    }));
+                StartCoroutine(urlImageLoader(imagegeneration.url, tempImageList, item.Key, () =>
+                {
+                    Debug.Log("created and added " + item.Key + " sprite to list");
+                    coroutineCount--;
                 }));
+            }));
 
         }
-        
+
 
         // Wait until all coroutines finish
         while (coroutineCount > 0)
@@ -77,10 +84,13 @@ public class enemySpawner : MonoBehaviour
         Debug.Log("all images generated in list");
         Debug.Log(listOfImages.Length);
 
+        //reference textbox in main camera and attach textfield to it and activate canvas
+        GameObject canvas = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Transform>().GetChild(0).gameObject;
+        canvas.SetActive(true);
+
         //set bool to false to get rid of load screen
         startmenu.LoadMenu.SetActive(false);
     }
-
 
     private IEnumerator urlImageLoader(string link, List<Sprite> tempList, string monsterName, Action callback)
     {
@@ -115,7 +125,9 @@ public class enemySpawner : MonoBehaviour
 
     public void doorSpawnEnemy(int numEnemies, string monsterType)
     {
-        Debug.Log("spawning enemies in doorSpawn enemy type: " + monsterType);
+        string tempMonster = monsterType.Substring(1);
+        Debug.Log("spawning enemies in doorSpawn enemy type: " + tempMonster);
+
         Vector3Int doorpos = manager.getDoorPos();
         Vector3Int roomCenterActual = new Vector3Int(0,0,0);
         foreach(var room in roomCenters.Values){
@@ -125,12 +137,12 @@ public class enemySpawner : MonoBehaviour
                     break;
             }
         }
-        
       
         //search through dictionary and find and pop monster from dictionary. check to see if bad request.
-        for (int i = 1; i < listOfImages.Length - 1; i++)
+        for (int i = 0; i < listOfImages.Length; i++)
         {
-            if (listOfImages[i].name == monsterType)
+            Debug.Log("searching monster in loop, " + listOfImages[i].name);
+            if (listOfImages[i].name == tempMonster)
             {
                 Debug.Log("loading sprite");
                 spriteRenderer.sprite = listOfImages[i];       //change to what enemy chatgpt wants to spawn from list
