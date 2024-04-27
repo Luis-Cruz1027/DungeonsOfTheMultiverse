@@ -192,6 +192,6 @@ public class OpenAIController : MonoBehaviour
             // await Task.Delay(3000);
         }
         Debug.Log("got out of the loop successfully!");
-
+        
     }
 }
