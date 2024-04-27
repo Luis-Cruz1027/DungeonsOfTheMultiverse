@@ -214,11 +214,6 @@ public class OpenAIController : MonoBehaviour
         enemySpawn = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<enemySpawner>();
 
         Debug.Log("got out of the loop successfully!");
-<<<<<<< HEAD
-        
-=======
-
         StartCoroutine(enemySpawn.preGenSpawner());
->>>>>>> 733f622df1120a116999281596d420631950468b
     }
 }
