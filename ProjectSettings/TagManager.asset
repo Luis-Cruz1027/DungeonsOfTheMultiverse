@@ -12,6 +12,10 @@ TagManager:
   - Dungeon
   - AIController
   - StartMenu
+  - History
+  - Current
+  - charachter menu
+  - Panel
   layers:
   - Default
   - TransparentFX

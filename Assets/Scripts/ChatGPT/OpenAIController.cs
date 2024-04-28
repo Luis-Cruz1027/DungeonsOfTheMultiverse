@@ -20,6 +20,7 @@ public class OpenAIController : MonoBehaviour
     public string monsterList;
     private string someText;
     private string temp;
+
     //spawner variables and GameObjects
     private enemySpawner enemySpawn;
     public string enemyType;
@@ -28,6 +29,7 @@ public class OpenAIController : MonoBehaviour
 
 
     public TMP_Text textField;
+    public TMP_Text textFieldCurrent;
     //public TMP_InputField inputField;
     public Dictionary<string, string> monsters;
     public StartMenu startMenu;
@@ -60,7 +62,17 @@ public class OpenAIController : MonoBehaviour
     {
         if (textField == null)
         {
-            textField = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<TMP_Text>();
+
+            GameObject panel = GameObject.FindGameObjectWithTag("Panel").GetComponent<Transform>().GetChild(0).gameObject;
+            GameObject panel2 = GameObject.FindGameObjectWithTag("Panel").GetComponent<Transform>().GetChild(4).gameObject;
+            panel.SetActive(true);
+            panel2.SetActive(true);
+
+            textField = GameObject.FindGameObjectWithTag("History").GetComponent<TMP_Text>();
+            textFieldCurrent = GameObject.FindGameObjectWithTag("Current").GetComponent<TMP_Text>();
+
+            panel.SetActive(false);
+            panel2.SetActive(false);
         }
 
         //reset variables on each call\
@@ -151,6 +163,7 @@ public class OpenAIController : MonoBehaviour
         else
         {
             textField.text += string.Format("DM: {0}\n\n", responseMessage.Content);
+            textFieldCurrent.text = string.Format("DM: {0}\n\n", responseMessage.Content);
         }
         
     }

@@ -11,7 +11,6 @@ public class Tabs : MonoBehaviour
     [SerializeField] private Image histButton;
     [SerializeField] private GameObject rollMenu;
     private bool toggle = false;
-
     // Start is called before the first frame update
 
     public void switchToCurrent(){
