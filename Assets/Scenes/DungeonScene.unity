@@ -668,7 +668,7 @@ GameObject:
   - component: {fileID: 415678433}
   m_Layer: 0
   m_Name: Text (TMP)
-  m_TagString: Untagged
+  m_TagString: Current
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -712,7 +712,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: This is the last thing chatGPT said!
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1163,7 +1163,7 @@ GameObject:
   - component: {fileID: 584394442}
   - component: {fileID: 584394441}
   m_Layer: 5
-  m_Name: Scroll View
+  m_Name: ' ScrollView  Hist'
   m_TagString: ScrollView
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1272,7 +1272,7 @@ GameObject:
   - component: {fileID: 586897795}
   m_Layer: 0
   m_Name: Panel
-  m_TagString: Untagged
+  m_TagString: Panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1761,7 +1761,7 @@ GameObject:
   - component: {fileID: 775783790}
   - component: {fileID: 775783789}
   m_Layer: 0
-  m_Name: History
+  m_Name: HistoryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3503,7 +3503,7 @@ GameObject:
   - component: {fileID: 1298395402}
   - component: {fileID: 1298395401}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: CurrentViewPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3794,7 +3794,7 @@ GameObject:
   - component: {fileID: 1368513954}
   - component: {fileID: 1368513953}
   m_Layer: 0
-  m_Name: Roll
+  m_Name: RollButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4068,7 +4068,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1554092873
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25122,7 +25122,7 @@ GameObject:
   - component: {fileID: 2070381531}
   - component: {fileID: 2070381530}
   m_Layer: 0
-  m_Name: Current
+  m_Name: CurrentButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25392,7 +25392,7 @@ GameObject:
   - component: {fileID: 2101025421}
   m_Layer: 5
   m_Name: Content
-  m_TagString: Untagged
+  m_TagString: History
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
