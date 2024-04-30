@@ -61,7 +61,7 @@ public class enemySpawner : MonoBehaviour
             coroutineCount++;
             Debug.Log(item.Key + " " + item.Value);
             //create images and set them in sprite list and add each element to instantiated list
-            StartCoroutine(imagegeneration.helperFunc(item.Value, () =>  //change contoller.description to be each monster description from dictionary
+            StartCoroutine(imagegeneration.helperFunc(item.Value, item.Key, () =>  //change contoller.description to be each monster description from dictionary
             {
                 Debug.Log("Made url for image");
 
